@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>utkarsh&#39;s blog</title>
+    <description>My presonal blog</description>
+    <link>/</link>
+    <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 04 Jun 2016 17:53:03 +0530</pubDate>
+    <lastBuildDate>Sat, 04 Jun 2016 17:53:03 +0530</lastBuildDate>
+    <generator>Jekyll v3.1.6</generator>
+    
+      <item>
+        <title>Hello World</title>
+        <description>&lt;p&gt;Hi. My name is Utkarsh Gupta and this is my first blog post. I’m planning to write posts about interesting things be it computer programmning or sports or books.
+Find about me more at &lt;a href=&quot;https://github.com/khalibartan&quot;&gt;Github&lt;/a&gt; and &lt;a href=&quot;https://plus.google.com/u/0/+UtkarshGupta_khalibartan&quot;&gt;Google+&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Fri, 03 Jun 2016 00:00:00 +0530</pubDate>
+        <link>/miscellaneous/2016/06/03/hello-world.html</link>
+        <guid isPermaLink="true">/miscellaneous/2016/06/03/hello-world.html</guid>
+        
+        <category>introduction</category>
+        
+        <category>blogging</category>
+        
+        
+        <category>Miscellaneous</category>
+        
+      </item>
+    
+  </channel>
+</rss>

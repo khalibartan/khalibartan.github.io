@@ -12,7 +12,7 @@
     padding: 30px 50px;
   }
   @include media-query($medium-screen) {
-    background-image: url("../img/sidebar-bg.jpg");
+    background-image: url("../img/cover.jpg");
     background-position: center bottom;
     background-size: cover;
     height: 100vh;
@@ -24,8 +24,8 @@
   color: $white;
   .avatar {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     float: none;
 //    @include media-query($medium-screen) {
 //      display: none;
@@ -87,7 +87,7 @@
     & a {
       margin-top: 1em;
       text-transform: lowercase;
-      font-size: 85%;
+      font-size: 16px;
       color: $secondary;
       &:hover,
       &:focus {
