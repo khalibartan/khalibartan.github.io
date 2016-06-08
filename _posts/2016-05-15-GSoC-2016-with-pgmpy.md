@@ -4,7 +4,7 @@ title: "Google Summer of Code 2016 with Python Software Foundation (pgmpy)"
 
 excerpt: "This all started around a year back, when I got introduced to open source (Free and Open Source, Free as in speech) world. Feeling of being a part of something big was itself amazing and to add someone will be using my work in something great this proved to be more than driving force needed to get me going. The more I worked the more addicted I got. In around October 2015 through my brother and some answers on Quora I came to know about pgmpy(A python library for Probabilistic Graphical Models), and since then I have been contributing continuously. "
 
-tags: [Probabilistic Graphical Models, MCMC, GSoC]
+tags: [GSoC]
 categories: [GSoC]
 comments: true
 ---

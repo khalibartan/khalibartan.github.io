@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Google Summer of Code week 1</title>
+  <meta name="description" content="This week of work proved to be quite productive. I was consistent with my proposed time line. For this week work I proposed to write base class structure for...">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://khalibartan.github.io/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://khalibartan.github.io/css/main.css">
+
+  <link rel="canonical" href="http://khalibartan.github.io/gsoc/2016/06/04/GSoC-week-1.html">
+  <link rel="alternate" type="application/rss+xml" title="utkarsh's blog" href="http://khalibartan.github.io/feed.xml" />
+  <link href='../feed.xml' rel='alterante' type='application/rss+xml'>
+</head>
+
+<body>
+  <nav class="post-navigation" role="navigation">
+  <div class="row">
+    <div class="col s5">
+      <div class="post-nav-prev">
+        
+        <a href="http://khalibartan.github.io/gsoc/2016/05/15/GSoC-2016-with-pgmpy.html" title="Google Summer of Code 2016 with Python Software Foundation (pgmpy)">
+          <div class="post-nav-btn">
+            <div class="post-nav-text"><span class="danger-text-color"><i class="fa fa-angle-left"></i> ~ </span><span class="hidden-md primary-text-color">Google Summer of Code 2016 with Python Software Foundation (pgmpy)</span></div>
+          </div>
+        </a>
+        
+      </div>
+    </div>
+    <div class="col s2">
+      <a href="http://khalibartan.github.io/">
+        <div class="leonids-icon">
+          <i class="fa fa-home"></i>
+        </div>
+      </a>
+    </div>
+    <div class="col s5 right">
+      <div class="post-nav-next">
+        
+      </div>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div class="container">
+  <div id="post">
+    <header class="post-header">
+      <h1 title="Google Summer of Code week 1">Google Summer of Code week 1</h1>
+      <span class="post-meta">
+        <span class="post-date">
+          4 JUN 2016
+        </span>
+        •
+        <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+
+      </span>
+
+    </header>
+
+    <article class="post-content">
+      
+      <p>This week of work proved to be quite productive. I was consistent with my proposed time line. For this week work I proposed to write base class structure for Hamiltonian Monte Carlo (HMC), implement methods for leapfrog, modified Euler and algorithm for finding a reasonable starting value of epsilon. During the start I wrote the leapfrog and modified Euler as methods of HMC class, but my mentor told me to write a base class and using that base class write leapfrog and modified Euler as different classes.</p>
+
+<p>The earlier structure looked something like this:</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HamiltonianMCda</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">discretize_time</span><span class="o">=</span><span class="s">'leapfrog'</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c"># Some arguments and parameters</span>
+        <span class="c"># chooses discretization algorithm depending upon</span>
+        <span class="c"># the string passed to discretize_time</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">leapfrog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">modifiedEuler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</code></pre>
+</div>
+
+<p>But why did we settle upon base class implementation? With the earlier structure things were not flexible from user point of view. What if user want to plug-in his own implementations. After the changes I created a base class called <strong>DiscretizeTime</strong> , class inheriting this could then be passed as an argument for discretization of time. Advantage of having a base class is that it provides a basic structure to the things, and adds extensibility. Now things look something like this:</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DiscretizeTime</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">discretize_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># returns the initialized values</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">LeapFrog</span><span class="p">(</span><span class="n">DiscretizeTime</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_discretize_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># computes the values and initializes the parameters</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">HamiltonianMCda</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">discretize_time</span><span class="o">=</span><span class="n">LeapFrog</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c"># discretize_time is a subclass of DiscretizeTime</span>
+        <span class="k">pass</span>
+</code></pre>
+</div>
+
+<p>Now using these base class user can pass his/her own implementations as an argument.</p>
+
+<p>I also wrote other base classes for finding Log of probability Distribution and Gradient of the log. During the time of writing my GSoC proposal me and my couldn’t decide how these methods for finding log and its gradient should be implemented. In this week meeting with the mentor, I proposed that I’ll write method in each model classes we will be implementing, and use that, if user doesn’t provide a class inheriting the base class for gradients and we settled upon it.</p>
+
+<p>Though this week work was great, but still there are things which remain unclear, from theoretical point. How to parameterize a continuous model still remains in doubt. Currently I have assumed that model parameterization will be of a matrix or array type structure. This assumption is good enough for the most of the common models I have came across, but things cannot be stated with certainty that it will generalize to all kind of continuous models. Me and my mentor are looking into things more deeply and hopefully we will find some solution soon. For the next week I’ll try to finish the Hamiltonian Monte Carlo sampler.</p>
+
+<h2 id="links">Links</h2>
+
+<ol>
+  <li><a href="https://github.com/pgmpy/pgmpy/pull/691">Pull request for Hamiltonian Monte Carlo</a></li>
+  <li><a href="https://docs.google.com/document/d/1W0iGbof58Jf98PCK1xKXdHY7-2dUwdctHDppWfE2sO4/edit?usp=sharing">GSoC proposal draft</a></li>
+</ol>
+
+    </article>
+  </div>
+
+  <div class="share-buttons">
+    <h6>Share on: </h6>
+    <ul>
+      <li>
+        <a href="https://twitter.com/intent/tweet?text=http://khalibartan.github.io/gsoc/2016/06/04/GSoC-week-1.html" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+      </li>
+      <li>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=http://khalibartan.github.io/gsoc/2016/06/04/GSoC-week-1.html" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+      </li>
+      <li>
+        <a href="https://plus.google.com/share?url=http://khalibartan.github.io/gsoc/2016/06/04/GSoC-week-1.html" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+      </li>
+      <li>
+        <a href="https://news.ycombinator.com/submitlink?u=http://khalibartan.github.io/gsoc/2016/06/04/GSoC-week-1.html" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+      </li>
+      <li>
+        <a href="https://www.reddit.com/submit?url=http://khalibartan.github.io/gsoc/2016/06/04/GSoC-week-1.html" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+      </li>
+    </ul>
+  </div><!-- end share-buttons -->
+
+  
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'utkashblog';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+
+  <footer>
+  &copy; 2016 Utkarsh Gupta
+</footer>
+
+  <script type="text/javascript" src="http://khalibartan.github.io/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://khalibartan.github.io/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="http://khalibartan.github.io/js/main.js"></script>
+
+
+</body>
+</html>

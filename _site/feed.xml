@@ -7,6 +7,68 @@
     <atom:link href="http://khalibartan.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Google Summer of Code week 1</title>
+        <description>&lt;p&gt;This week of work proved to be quite productive. I was consistent with my proposed time line. For this week work I proposed to write base class structure for Hamiltonian Monte Carlo (HMC), implement methods for leapfrog, modified Euler and algorithm for finding a reasonable starting value of epsilon. During the start I wrote the leapfrog and modified Euler as methods of HMC class, but my mentor told me to write a base class and using that base class write leapfrog and modified Euler as different classes.&lt;/p&gt;
+
+&lt;p&gt;The earlier structure looked something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HamiltonianMCda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discretize_time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;leapfrog&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# Some arguments and parameters&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# chooses discretization algorithm depending upon&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# the string passed to discretize_time&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;leapfrog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;modifiedEuler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;But why did we settle upon base class implementation? With the earlier structure things were not flexible from user point of view. What if user want to plug-in his own implementations. After the changes I created a base class called &lt;strong&gt;DiscretizeTime&lt;/strong&gt; , class inheriting this could then be passed as an argument for discretization of time. Advantage of having a base class is that it provides a basic structure to the things, and adds extensibility. Now things look something like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscretizeTime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;discretize_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# returns the initialized values&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LeapFrog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DiscretizeTime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;_discretize_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# computes the values and initializes the parameters&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HamiltonianMCda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discretize_time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LeapFrog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# discretize_time is a subclass of DiscretizeTime&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now using these base class user can pass his/her own implementations as an argument.&lt;/p&gt;
+
+&lt;p&gt;I also wrote other base classes for finding Log of probability Distribution and Gradient of the log. During the time of writing my GSoC proposal me and my couldn’t decide how these methods for finding log and its gradient should be implemented. In this week meeting with the mentor, I proposed that I’ll write method in each model classes we will be implementing, and use that, if user doesn’t provide a class inheriting the base class for gradients and we settled upon it.&lt;/p&gt;
+
+&lt;p&gt;Though this week work was great, but still there are things which remain unclear, from theoretical point. How to parameterize a continuous model still remains in doubt. Currently I have assumed that model parameterization will be of a matrix or array type structure. This assumption is good enough for the most of the common models I have came across, but things cannot be stated with certainty that it will generalize to all kind of continuous models. Me and my mentor are looking into things more deeply and hopefully we will find some solution soon. For the next week I’ll try to finish the Hamiltonian Monte Carlo sampler.&lt;/p&gt;
+
+&lt;h2 id=&quot;links&quot;&gt;Links&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/pgmpy/pgmpy/pull/691&quot;&gt;Pull request for Hamiltonian Monte Carlo&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.google.com/document/d/1W0iGbof58Jf98PCK1xKXdHY7-2dUwdctHDppWfE2sO4/edit?usp=sharing&quot;&gt;GSoC proposal draft&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Sat, 04 Jun 2016 00:00:00 +0530</pubDate>
+        <link>http://khalibartan.github.io//gsoc/2016/06/04/GSoC-week-1.html</link>
+        <guid isPermaLink="true">http://khalibartan.github.io//gsoc/2016/06/04/GSoC-week-1.html</guid>
+      </item>
+    
+      <item>
         <title>Google Summer of Code 2016 with Python Software Foundation (pgmpy)</title>
         <description>&lt;p&gt;This all started around a year back, when I got introduced to open source (Free and Open Source, Free as in speech) world. Feeling of being a part of something big was itself amazing and to add someone will be using my work in something great this proved to be more than driving force needed to get me going. The more I worked the more addicted I got. In around October 2015 through my &lt;a href=&quot;https://medium.com/@hargup&quot;&gt;brother&lt;/a&gt; and some answers on Quora I came to know about &lt;a href=&quot;http://pgmpy.org/&quot;&gt;pgmpy&lt;/a&gt;(A python library for Probabilistic Graphical Models), and since then I have been contributing continuously. Working with pgmpy have been a great learning experience, I learned lots of new things about python which I didn’t know earlier and of-course Probabilistic Graphical Models. I also came to know about &lt;a href=&quot;https://www.python.org/dev/peps/&quot;&gt;PEP&lt;/a&gt; (Python Enhancement Proposals), and especially &lt;a href=&quot;https://www.python.org/dev/peps/pep-0008/&quot;&gt;PEP8&lt;/a&gt; , which made Python code more beautiful to read.&lt;/p&gt;
 
