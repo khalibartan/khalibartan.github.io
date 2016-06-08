@@ -7,13 +7,41 @@
     <atom:link href="http://khalibartan.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>Hello World</title>
-        <description>&lt;p&gt;Hi. My name is Utkarsh Gupta and this is my first blog post. I’m planning to write posts about interesting things be it computer programmning or sports or books.
-Find about me more at &lt;a href=&quot;https://github.com/khalibartan&quot;&gt;Github&lt;/a&gt; and &lt;a href=&quot;https://plus.google.com/u/0/+UtkarshGupta_khalibartan&quot;&gt;Google+&lt;/a&gt;&lt;/p&gt;
+        <title>Google Summer of Code 2016 with Python Software Foundation (pgmpy)</title>
+        <description>&lt;p&gt;This all started around a year back, when I got introduced to open source (Free and Open Source, Free as in speech) world. Feeling of being a part of something big was itself amazing and to add someone will be using my work in something great this proved to be more than driving force needed to get me going. The more I worked the more addicted I got. In around October 2015 through my &lt;a href=&quot;https://medium.com/@hargup&quot;&gt;brother&lt;/a&gt; and some answers on Quora I came to know about &lt;a href=&quot;http://pgmpy.org/&quot;&gt;pgmpy&lt;/a&gt;(A python library for Probabilistic Graphical Models), and since then I have been contributing continuously. Working with pgmpy have been a great learning experience, I learned lots of new things about python which I didn’t know earlier and of-course Probabilistic Graphical Models. I also came to know about &lt;a href=&quot;https://www.python.org/dev/peps/&quot;&gt;PEP&lt;/a&gt; (Python Enhancement Proposals), and especially &lt;a href=&quot;https://www.python.org/dev/peps/pep-0008/&quot;&gt;PEP8&lt;/a&gt; , which made Python code more beautiful to read.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-proposal&quot;&gt;The Proposal&lt;/h2&gt;
+&lt;p&gt;My Proposal deals with adding two new sampling algorithms in pgmpy namely:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Hamiltonian Monte Carlo or Hybrid Monte Carlo (HMC)&lt;/li&gt;
+  &lt;li&gt;No U Turn Sampler (NUTS)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If they don’t click anything to you, then no need to worry, even I wasn’t familiar with them before February 2016. Some more blog posts from my side and hopefully you will feel at home with these terms.&lt;/p&gt;
+
+&lt;p&gt;These two algorithms have become quite popular in recent time due to there accuracy and speed. Hamiltonian Monte Carlo (HMC) and No U Turn Sampler(NUTS) are Markov chain Monte Carlo (MCMC) algorithms / methods.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://khalibartan.github.io/img/markov_chain.png&quot; alt=&quot;markov_chain&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Markov Chains is a transition model with property that the probability distribution of next state in the chain depends on the transition function associated with current state, not the other preceding states in the process. A random walk in Markov Chain gives a sample of that distribution. Markov Chain Monte Carlo sampling is a process that mirrors this behavior of Markov Chain.&lt;/p&gt;
+
+&lt;p&gt;Currently pgmpy provides two sampling classes, A range of algorithms namely Forward sampling, Rejection Sampling and Likelihood weighted sampling which are specific to Bayesian Model and Gibbs Sampling a MCMC algorithm that generates samples from both Bayesian Network and Markov models. Hamiltonian/Hybrid Monte Carlo (HMC) is a MCMC algorithm that adopts physical system dynamics rather than a probability distribution to propose future states in the Markov chain. No U Turn Sampler (NUTS) is an extension of Hamiltonian Monte Carlo that does not require the number of steps L (a parameter that is crucial for good performance in case of HMC).&lt;/p&gt;
+
+&lt;p&gt;Post Script: When I’ll be finished with my first half of the project I’ll write a series of posts which will serve as an introduction to probabilistic sampling and Markov Chain Monte Carlo, specifically with introduction to Hoeffding’s inequality, Markov Chains, MCMC techniques such as Metropolis-Hastings, Gibbs sampler, and HMC.&lt;/p&gt;
+
+&lt;h2 id=&quot;references-and-links&quot;&gt;References and Links&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.google.com/document/d/1W0iGbof58Jf98PCK1xKXdHY7-2dUwdctHDppWfE2sO4/edit?usp=sharing&quot;&gt;GSoC Proposal&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Markov_chain&quot;&gt;Wikipedia, Markov Chain&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://mitpress.mit.edu/books/probabilistic-graphical-models&quot;&gt;Probabilistic Graphical Models Principles and Techniques: Daphne Koller, Nir Friedman&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
 </description>
-        <pubDate>Fri, 03 Jun 2016 00:00:00 +0530</pubDate>
-        <link>http://khalibartan.github.io//miscellaneous/2016/06/03/hello-world.html</link>
-        <guid isPermaLink="true">http://khalibartan.github.io//miscellaneous/2016/06/03/hello-world.html</guid>
+        <pubDate>Sun, 15 May 2016 00:00:00 +0530</pubDate>
+        <link>http://khalibartan.github.io//gsoc/2016/05/15/GSoC-2016-with-pgmpy.html</link>
+        <guid isPermaLink="true">http://khalibartan.github.io//gsoc/2016/05/15/GSoC-2016-with-pgmpy.html</guid>
       </item>
     
   </channel>
