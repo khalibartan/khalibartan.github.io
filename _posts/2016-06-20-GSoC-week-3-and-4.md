@@ -1,4 +1,4 @@
-﻿---
+---
 layout: post
 title: "Google Summer of Code week 3 and 4"
 
@@ -36,7 +36,7 @@ This is how output looks like now:
 
 - If user doesn’t have a installation of pandas in environment
 
-```python
+~~~python
 >>> from pgmpy.inference.continuous import HamiltonianMC as HMC, LeapFrog
 >>> from pgmpy.models import JointGaussianDistribution as JGD
 >>> import numpy as np
@@ -62,11 +62,11 @@ array([[ 3.0352818 ,  0.71379304],
 9932.0
 >>> sampler.acceptance_rate
 0.9932
-```
+~~~
 
 - If user has a pandas installation
 
-```python
+~~~python
 >>> from pgmpy.inference.continuous import HamiltonianMC as HMC, GradLogPDFGaussian, ModifiedEuler
 >>> from pgmpy.models import JointGaussianDistribution as JGD
 >>> import numpy as np
@@ -83,11 +83,11 @@ array([[ 3.0352818 ,  0.71379304],
 2   1.608700e+00   1.315349e+00
 3   1.608700e+00   1.315349e+00
 4   6.843856e-01   6.237043e-01
-```
+~~~
 
 In contrast to earlier output which was just a list of numpy.array objects
 
-```python
+~~~python
 >>> from pgmpy.inference.continuous import HamiltonianMC as HMC, GradLogPDFGaussian, ModifiedEuler
 >>> from pgmpy.models import JointGaussianDistribution as JGD
 >>> import numpy as np
@@ -108,7 +108,7 @@ In contrast to earlier output which was just a list of numpy.array objects
         [ 1.41753311]]),
  array([[ 1.48938348],
         [ 1.32887231]])]
-```
+~~~
 
 Next week I’ll try to do some changes mentioned by my mentor on my PR. Also I’ll write more test cases to individually
 test each function instead of testing the overall implementation. After my PR gets merged I’ll try to write introductory blogs
