@@ -4,7 +4,7 @@ title: "Google Summer of Code week 5 and 6"
 
 excerpt: "During week 5, I started working on No U Turn Sampler (NUTS). NUTS is an extension of Hamiltonian Monte Carlo that eliminates the need
 to set trajectory length. NUTS recursively builds a tree in forward and backward direction proposing set of likely candidates for new
-value of position and momentum and stopping automatically when it proposed values are no longer useful (doubling back). 
+value of position and momentum and stopping automatically when it proposed values are no longer useful (doubling back).
 
 During week 6 apart from working on NUTS with dual-averaging I also used profiling to see scope of optimizations in my current implementation."
 
@@ -20,7 +20,9 @@ value of position and momentum and stopping automatically when it proposed value
 algorithm stepsize can be adapted on fly, thus making possible to _run NUTS without any hand tuning at all_ :) .
 
 I tried implementing following algorithms from the paper[1]
+
 - Algorithm 3: Efficient No-U-Turn Sampler
+
 - Algorithm 6: No-U-Turn Sampler with Dual Averaging
 
 The proposed API is similar to what we have for Hamiltonian Monte Carlo. Here is a sample example on how to use NUTS
@@ -43,7 +45,9 @@ rec.array([(0.1, 0.9, 0.3),
  (-0.2726336476939125, 2.6230854954595357, 2.923948403903159)], 
           dtype=[('x', '<f8'), ('y', '<f8'), ('z', '<f8')])
 ~~~
+
  and NUTS with dual averaging
+
 ~~~python
 >>> from pgmpy.inference.continuous import NoUTurnSamplerDA as NUTSda
 >>> from pgmpy.models import JointGaussianDistribution as JGD
