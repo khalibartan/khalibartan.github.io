@@ -1,10 +1,10 @@
 # Site
 title:              Utkarsh's Blog
-bio:                'IT undergrad @ MNNIT Allahabad. Believes in free speech.'
+bio:                'IT undergrad @ MNNIT Allahabad.'
 description:        "My personal blog"
 reading_time:       true
 words_per_minute:   200
-logo:               'assets/img/logo.png'
+logo:               'img/avatar.jpg'
 background:         'assets/img/placeholder-big.jpg'
 tiled_bg:           false   # Set this true if you want to tile your background image, otherwise it will be covered
 locale:             en_US
@@ -42,7 +42,7 @@ email:              utkarsh.gupta550@gail.com
 #facebook:          username
 github:             khalibartan
 #stackoverflow:     123456/username   from a "http://stackoverflow.com/users/123456/username" link
-#linkedin:          username
+linkedin:           utgup
 #xing:              username
 #instagram:          username
 #lastfm:            username
