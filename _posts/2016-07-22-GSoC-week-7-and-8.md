@@ -1,8 +1,8 @@
-﻿---
+---
 layout: post
 title: "Google Summer of Code week 7 and 8"
 
-excerpt: "MY PR for No-U-Turn-Sampler (NUTS) and NUTS with dual averaging has been merged PR [#706](https://github.com/pgmpy/pgmpy/pull/706).
+excerpt: "MY PR for No-U-Turn-Sampler (NUTS) and NUTS with dual averaging has been merged.
 Apart from that I made a slight change in API of all the continuous sampling algorithms. Earlier I made the `grad_log_pdf` argument to be optional.
 Also since PR which dealt with implementing `JointGaussianDistribution` has been merged, I also made changes to accommodate it."
 
@@ -10,6 +10,7 @@ tags: [pgmpy, GSoC]
 categories: [GSoC]
 comments: true
 ---
+
 MY PR for No-U-Turn-Sampler (NUTS) and NUTS with dual averaging has been merged PR [#706](https://github.com/pgmpy/pgmpy/pull/706). Apart from that I made a slight
 change in API of all the continuous sampling algorithms. Earlier I made the `grad_log_pdf` argument to be optional. You can either pass in a custom implementation
 or otherwise it will use the gradient function in the model object. But it was a poor design choice. Not only it was making code to look ugly, it was also making
