@@ -2,7 +2,11 @@
 layout: post
 title: "Monte Carlo Methods"
 
-excerpt: ""
+excerpt: "Monte Carlo methods is a class of methods or algorithms in which we try to approximate the numerical results using repeated random sampling.
+Monte Carlo methods are useful to obtain numerical solution to
+problems which are too complicated to be solved analytically. The most popular class of Monte Carlo methods are Monte Carlo approximations for integration
+a.k.a Monte Carlo integration.
+"
 
 tags: [MCMC, GSoC]
 categories: [MCMC, GSoC]
@@ -119,7 +123,9 @@ so none of our samples will cause the problem.
 
 We can write the above procedure into following simple steps:
 
-If itegration is of format $$I = \int_{D}F(\vec{x})d\vec{x}$$, where $$D$$ is domain
+If itegration is of format 
+
+$$I = \int_{D}F(\vec{x})d\vec{x}$$, where $$D$$ is domain
 
 - First find volume over the domain, i.e.
 
@@ -162,9 +168,9 @@ The truncated normal distribution is the probability distribution of a normally 
 
 The probability density function for Truncated normal distribution is defined as:
 
-$$ f(x; \mu, \sigma, a, b) = \frac{\frac{1}{\sigma}\phi(\frac{x - \mu}{\sigma})}{\Phi(\frac{x - \mu}{\sigma}) - \Phi(\frac{x - \mu}{\sigma})}$$,
+$$ f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\phi(\frac{x - \mu}{\sigma}) / \Phi(\frac{x - \mu}{\sigma}) - \Phi(\frac{x - \mu}{\sigma})$$,
 
-where $$\phi(x) = \frac{1}{\surd2\pi}exp(x/2) $$, and \Phi(.) is the cummulative density function of standard normal distribution.
+where $$\phi(x) = \frac{1}{\surd2\pi}exp(x/2) $$, and $$\Phi(.)$$ is the cummulative density function of standard normal distribution.
 
 Now we can approximate the expected value of the Truncated normal distribution.
 
@@ -182,7 +188,7 @@ Now we will draw $$N$$ independent samples $$x_1,\cdots,x_N$$ from uniform (2, 7
 
 So, we can approximate expected value $$E$$ as
 
-$$E[x] \approx \frac{V}{N}\sum_{i=1}^{N}f(x_i; 3, 1, 2, 7)*x_i$$
+$$E[x] \approx \frac{V}{N}\sum_{i=1}^{N}f(x_i; 3, 1, 2, 7)x_i$$
 
 Here is the python code for the above procedure:
 
