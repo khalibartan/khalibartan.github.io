@@ -129,7 +129,7 @@ Our algorithm will rank pages in order Page 4, Page 3, Page 1, Page 2  :o .
 
 One can see that in starting there were fluctuations but after some-time chain reached an equilibrium/stationary distribution.
 The initial period of about 10 iterations(here) is called **burn-in** period of Markov Chain and is defined as the number of iterations
-it takes the chain to move from initial conditions to stationary distribution. I find Burn-in period to be a misleading term so I call it Warm-up period.
+it takes the chain to move from initial conditions to stationary distribution. I find Burn-in period to be a misleading term so I'll call it **Warm-up** period.
 The Burn-in term was used by early authors of MCMC who were from physics background and has been used since than :/ .
 
 One interesting thing about stationary Markov chains is that it is not necessary to sequentially iterate to predict future state. One can predict future state
@@ -142,11 +142,10 @@ $$P^{(24)}(X^{(24)}) = P^{(0)}(X^{(0)})T^{24} $$
 # Continuous State-Space Markov Chains
 
 A Markov chain can also have continuous state space that exist in real numbers $$x \in R^N$$. In this we cannot represent transition operator as a matrix
-, but is instead represented as a continuous function on the real numbers. Like Finite state-space Markov chains continuous state-space Markov chains
+, but instead we represent it as a continuous function on the real numbers. Like Finite state-space Markov chains continuous state-space Markov chains
  also have a warm-up period and a stationary distribution but here stationary distribution is also over continuous set of variables.
 
-Lets look at example on how to use a continuous state space Markov chain to
-sample from continuous distribution.
+Lets look at example on how to use a continuous state space Markov chain to sample from continuous distribution.
 Here our transition operator will be normal distribution with mean as half of the
  distance between zero and previous state and variance as 7. We will throw away certain amount of samples generated in start as they are in warm-up period.
 Also we can run multiple chains simultaneously to draw samples more densely.
