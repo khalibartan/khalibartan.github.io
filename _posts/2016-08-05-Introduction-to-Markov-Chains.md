@@ -3,7 +3,7 @@ layout: post
 title: "Introduction to Markov Chains"
 
 excerpt: "Markov Chains are integral component of Markov Chain Monte Carlo (MCMC) techniques.
-Under MCMC Markov Chain is used to sample from dome target distribution.
+Under MCMC Markov Chain is used to sample from some target distribution.
 This post tries to develop basic intuition about what Markov Chain is and how we can use it to sample from a distribution.
 A Markov Chain is a stochastic process that undergoes transition from one state to another on a given set of states called state space of Markov Chain."
 
@@ -12,11 +12,11 @@ categories: [MCMC, GSoC]
 comments: true
 ---
 [Markov Chains](https://en.wikipedia.org/wiki/Markov_chain) are integral component of Markov Chain Monte Carlo (MCMC) techniques. 
-Under MCMC Markov Chain is used to sample from dome target distribution.
+Under MCMC Markov Chain is used to sample from some target distribution.
 This post tries to develop basic intuition about what Markov Chain is and how we can use it to sample from a distribution.
 
-In a simple yet descriptive way we can define Markov Chain as a collection
-of random variables with having the property that, _given the present, the future is conditionally independent of the past_.
+In a layman terms we can define Markov Chain as a collection
+of random variables having the property that, _given the present, the future is conditionally independent of the past_.
 This might may not make sense to you right now but this will be the core of the discussion when we discuss about MCMC algorithms.
 
 Lets us now take a formal (mathematical) look at the definition of Markov Chain and some of its properties.
@@ -40,7 +40,7 @@ $$P^{(t+1)}(X^{(t+1)} = x)$$ = $$ \sum_{x' \in Val(x)}P^{(t)}(X^{(t)} = x')T(x' 
 
 I earlier described a porperty of Markov chain which was
 
-> > Given the present, the future is conditionally independent of the past
+> Given the present, the future is conditionally independent of the past
 
 This property is called as Markov Property or memoryless property of Markov chain, which is mathematically described as:
 
@@ -62,9 +62,83 @@ If the state space of Markov Chain takes on a finite number of distinct values, 
 
 $$T(X^{t+1}=x_j | X^{t} = x_i) = p_{ij}$$
 
-The entry $$p_{ij}$$ represents transition probability of moving from sate $$x_i$$ to state $$x_j$$.
+The entry $$p_{ij}$$ represents transition probability of moving from state $$x_i$$ to state $$x_j$$.
 
-Lets use a stationary Markov chain and create our own naive page ranking algorithm. Here is a python code for that
+Lets first use an example Markov chain and understand these terms using that. I'll use a Markov chain to simulate 
+[Gambler's Ruin](https://en.wikipedia.org/wiki/Gambler%27s_ruin) problem. In this problem suppose that there are two players $$P_1$$ and $$P_2$$ playing poker.
+ Initially both of them had $$\$2$$ with them. In each round winner gets a dollar and loser loses one and game will continue till any one of them loses his all
+money. Consider that probability of winning for $$P_1$$ is $$0.49$$. Our task is to estimate probability of winning the complete
+game for player $$P_1$$. Here is how our Markov chain will look like:
+![Gambler's Ruin Chain]({{ site.url }}/img/gambler's_ruin_chain.png)
+
+The state space of Markov Chain is $$\{0, 1, 2, 3, 4\}$$
+As state space is finite, we can write the transition model in form of a matrix as
+
+~~~
+transition = [[1, 0, 0, 0, 0],
+              [0.51, 0, 0.49, 0, 0],
+              [0, 0.51, 0, 0.49, 0],
+              [0, 0, 0.51, 0, 0.49],
+              [0, 0, 0, 0, 1]]
+~~~
+
+The initial money with $$P_1$$ is $$2$$, so we can consider start state as vector `start = [0, 0, 1, 0, 0]`.
+Now with these characterisation we will simulate our Markov Chain and try to reach stationary distribution, which will give us probability of winning.
+
+~~~ python
+import numpy as np
+import matplotlib.pyplot as plt
+iterations = 30  # Simulate chain for 30 iterations
+initial_state = np.array([[0, 0, 1, 0, 0]])
+transition_model = np.array([[1, 0, 0, 0, 0], [0.51, 0, 0.49, 0, 0], [0, 0.51, 0, 0.49, 0],
+                             [0, 0, 0.51, 0, 0.49], [0, 0, 0, 0, 1]])
+transitions = np.zeros((iterations, 5))
+transitions[0] = initial_state
+for i in range(1, iterations):
+    transitions[i] = np.dot(transitions[i-1], transition_model)
+labels = [0, 0, 0, 0, 0, 0]
+plt.figure()
+plt.hold(True)
+plt.plot(transitions)
+labels[0], = plt.plot(range(iterations), transitions[:,0], color='r')
+labels[1], = plt.plot(range(iterations), transitions[:,1], color='b')
+labels[2], = plt.plot(range(iterations), transitions[:,2], color='g')
+labels[3], = plt.plot(range(iterations), transitions[:,3], color='m')
+labels[4], = plt.plot(range(iterations), transitions[:,4], color='c')
+labels[5], = plt.plot([20, 20], [0, 1.2], color='k', linestyle='dashed')
+plt.legend(labels, ['money=0','money=1','money=2','money=3', 'money=4', 'burn-in'])
+plt.hold(False)
+#plt.show()
+print("Probability of winning the complete game for P1 is", transitions[iterations - 1][4])
+~~~
+The output of above code sample is: **Probability of winning the complete game for P1 is 0.479978863078**, which is a good approximation of original result **0.48**(see the [link](https://en.wikipedia.org/wiki/Gambler's_ruin#Unfair_coin_flipping), for calculation of exact result).
+![Gambler_chain_trace]({{ site.url }}/img/gambler_chain_trace.png)
+In [Trace plot](https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect008.htm)
+of Markov chain one can see that in starting there were fluctuations but after some-time chain reached an equilibrium/stationary distribution as probabilities are
+not changing much in subsequent iterations. Mathematically a distribution $$\pi(X=x)$$ is a stationary distribution if it satisfies following property:
+
+$$ \pi(X=x') = \sum_{x \in Val(X)}\pi(X=x)T(x \rightarrow x')$$
+
+Using the above property we can see that our chain has approximately reached stationary distribution as following condition returns `True`.
+
+~~~ python
+np.allclose(transitions[-2], np.dot(transitions[-1], transition_model), atol=1e-04)
+~~~
+
+The initial period of about 20 iterations(here) is called **burn-in** period of Markov Chain( see the dotted line in plot ) and is defined as the
+number of iterations it takes the chain to move from initial conditions to stationary distribution. I find Burn-in period to be a misleading term
+so I'll call it **Warm-up** period. The Burn-in term was used by early authors of MCMC who were from physics background and has been used since than :/ .
+
+One interesting thing about stationary Markov chains is that it is not necessary to sequentially iterate to predict future state. One can predict future state
+by raising the transition operator to the N-th power,  where N is the iteration
+a which we want to predict, and then multiplying it by the initial distribution. For example if we wanted to predict probabilities after 24 iteration we could
+simply have done:
+
+$$P^{(24)}(X^{(24)}) = P^{(0)}(X^{(0)})T^{24} $$
+
+Lets look at a more interesting application of stationary Markov chain. Here we will create our own naive page ranking algorithm using a Markov Chain.
+For computing transition probabilities from page $$i$$ to $$j$$ (for all pairs of $$i$$ , $$j$$) we use a configuration parameter $$\alpha$$ and two factors
+ which are dependent on the number of pages that links to $$i$$ and whether the page $$j$$ has link to page $$i$$. Here is a python code for the same:
 
 ~~~ python
 import matplotlib.pyplot as plt
@@ -72,6 +146,7 @@ import numpy as np
 
 alpha = 0.77  # Configuration parameter
 iterations = 20
+num_world_wide_web_pages = 4.0
 # Consider world wide web has 4 web pages only
 # Following is mapping between number of links to page
 links_to_page = {0: 3, 1: 3, 2: 1, 3: 2}
@@ -79,7 +154,8 @@ links_to_page = {0: 3, 1: 3, 2: 1, 3: 2}
 # Returns transition probability of x -> y
 def get_transition_probabilities(links_to_page, linked):
     global alpha
-    constant_val = (1.0 - alpha)/4.0
+    global num_world_wide_web_pages
+    constant_val = (1.0 - alpha)/num_world_wide_web_pages
     if linked is True:
         return (alpha/links_to_page) + constant_val
     else:
@@ -118,7 +194,7 @@ labels[0], = plt.plot(range(iterations), transitions[:,0], color='b')
 labels[1], = plt.plot(range(iterations), transitions[:,1], color='r')
 labels[2], = plt.plot(range(iterations), transitions[:,2], color='g')
 labels[3], = plt.plot(range(iterations), transitions[:,3], color='k')
-labels[4], =plt.plot([10, 10], [0, 1], color='y', linestyle='dashed')
+labels[4], = plt.plot([10, 10], [0, 1], color='y', linestyle='dashed')
 plt.legend(labels, ['page 1', 'page 2', 'page 3', 'page 4', 'burn-in'])
 plt.hold(False)
 plt.show()
@@ -127,17 +203,6 @@ plt.show()
 
 Our algorithm will rank pages in order Page 4, Page 3, Page 1, Page 2  :o .
 
-One can see that in starting there were fluctuations but after some-time chain reached an equilibrium/stationary distribution.
-The initial period of about 10 iterations(here) is called **burn-in** period of Markov Chain and is defined as the number of iterations
-it takes the chain to move from initial conditions to stationary distribution. I find Burn-in period to be a misleading term so I'll call it **Warm-up** period.
-The Burn-in term was used by early authors of MCMC who were from physics background and has been used since than :/ .
-
-One interesting thing about stationary Markov chains is that it is not necessary to sequentially iterate to predict future state. One can predict future state
-by raising the transition operator to the N-th power,  where N is the iteration
-a which we want to predict, and then multiplying it by the initial distribution. For eg if we wanted to predict probabilities after 24 iteration we could
-simply have done:
-
-$$P^{(24)}(X^{(24)}) = P^{(0)}(X^{(0)})T^{24} $$
 
 # Continuous State-Space Markov Chains
 
@@ -147,7 +212,8 @@ A Markov chain can also have continuous state space that exist in real numbers $
 
 Lets look at example on how to use a continuous state space Markov chain to sample from continuous distribution.
 Here our transition operator will be normal distribution with mean as half of the
- distance between zero and previous state and variance as 7. We will throw away certain amount of samples generated in start as they are in warm-up period.
+ distance between zero and previous state and unit variance. We will throw away certain amount of states generated in start as they will be in warm-up period
+, the subsequent states that our chain reaches in stationary distribution will be our samples.
 Also we can run multiple chains simultaneously to draw samples more densely.
 
 ~~~ python
