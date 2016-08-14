@@ -122,12 +122,12 @@ $$ \pi(X=x') = \sum_{x \in Val(X)}\pi(X=x)T(x \rightarrow x')$$
 Using the above property we can see that our chain has approximately reached stationary distribution as following condition returns `True`.
 
 ~~~ python
-np.allclose(transitions[-2], np.dot(transitions[-1], transition_model), atol=1e-04)
+np.allclose(transitions[-1], np.dot(transitions[-1], transition_model), atol=1e-04)
 ~~~
 
 The initial period of about 20 iterations(here) is called **burn-in** period of Markov Chain( see the dotted line in plot ) and is defined as the
 number of iterations it takes the chain to move from initial conditions to stationary distribution. I find Burn-in period to be a misleading term
-so I'll call it **Warm-up** period. The Burn-in term was used by early authors of MCMC who were from physics background and has been used since than :/ .
+so I'll call it **Warm-up** period. The Burn-in term was used by early authors of MCMC who were from physics background and has been used since then :/ .
 
 One interesting thing about stationary Markov chains is that it is not necessary to sequentially iterate to predict future state. One can predict future state
 by raising the transition operator to the N-th power,  where N is the iteration
