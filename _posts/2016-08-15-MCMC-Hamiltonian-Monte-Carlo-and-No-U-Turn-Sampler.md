@@ -89,7 +89,7 @@ Leapfrog method yields even better result than Modified Euler Method.
 
 ## Example: Simulating Hamiltonian dynamics of a simple pendulum
 
-Imagine a bob of mass $$m = $$ attached to a string of length $$l=1.5$$
+Imagine a bob of mass $$m = 1$$ attached to a string of length $$l=1.5$$
 whose one end is fixed at point $$(x=0, y=0)$$.
 The equilibrium position of the pendulum is at $$x = 0$$. Now keeping string
 stretched we move it some distance horizontally say $$x_0$$. The corresponding
@@ -340,48 +340,52 @@ plt.show()
 ~~~
 ![HMC_2D_samples]({{ site.url }}/img/hmc_2d_samples.png)
 
-If one compares these results to what we have seem in previous post for
+If one compares these results to what we have seen in previous post for
 [Metropolis-Hastings algorithm]({{ site.url }}/MCMC-Metropolis-Hastings-Algorithm/)
-we can see that HMC converges a lot faster than Metropolis-Hastings algorithm.
-On careful inspection we can see that graph also looks a lot denser than
-that of Metropolis-Hastings, which mean that our most of the samples are
+it is clear that HMC converges towards target distribution 
+a lot faster than Metropolis-Hastings algorithm. On careful inspection
+we can also see that graph looks a lot denser than that of
+Metropolis-Hastings, which mean that our most of the samples are
 accepted (high acceptance rate).
 
 Though performance of HMC might seem better but it critically depends on
 trajectory length and stepsize. Poor choice of these can lead to high rejection
 rate, or too high computation time. One can see the results himself by
-changing both of the parameters in above example.
+changing both of the parameters in above example. For example
+when I just changed stepize to 0.5 from 0.25 in above example, nearly all
+samples are rejected. Though stepsize parameter for HMC implementation is
+ optional, I do not suggest one should use it.
 
-Though stepsize parameter for HMC implementation is optional, I do not
-suggest to use it. In pgmpy we have implemented an another variant of HMC 
-in which we adapt the parameter stepsize during the course of sampling thus
-completely eliminates the need of specifying stepsize but requires
-trajectory length to be specified by user. This variant of HMC
-is Hamiltonian Monte Carlo with dual averaging. We have also provided the
+In pgmpy we have implemented an another variant
+of HMC in which we adapt the stepsize during the course of sampling thus
+completely eliminates the need of specifying stepsize (but still requires
+trajectory length to be specified by user). This variant of HMC is known
+as Hamiltonian Monte Carlo with dual averaging. In pgmpy we have also provided the
 implementation of Modified Euler method for simulating Hamiltonian dynamics.
-(By default both algorithms use Leapfrog. It is not recommended to use 
-Modified Euler method, or Euler method because trajectories are not 
+(By default both algorithms use Leapfrog. It is not recommended to use
+Modified Euler method, or Euler method because trajectories are not
 elliptical, thus they show poor performance in comparison to leapfrog
 method). Here is a code snippet on how we can use HMCda algorithm in pgmpy.
 
 ~~~ python
 # Using JointGaussianDistribution from above example
-from pgmpy.inference import HamiltonianMCda as HMCda, ModifiedEluer
-# delta is 
-sampler_da = HMCda(model, GradLogPDFGaussian, simulate_dynamics=ModifiedEluer,
-delta=0.65)
+from pgmpy.inference.continuous import HamiltonianMCda as HMCda, ModifiedEuler
+# Using modified euler instead of
+sampler_da = HMCda(model, GradLogPDFGaussian, simulate_dynamics=ModifiedEuler)
 # num_adapt is number of iteration to run adaptation of stepsize
-samples = sampler_da.sample(initial_pos=np.array([7, 0]), num_adapt=1000,num_samples=1000, trajectory_length=10)
+samples = sampler_da.sample(initial_pos=np.array([7, 0]), num_adapt=10,num_samples=10, trajectory_length=10)
 print(samples)
 ~~~
 
+Both (HMC and HMCda) of these algorithms requires some hand-tuning from user,
+which can be time consuming especially for high dimensional complex model.
 [No-U-Turn Sampler](http://www.stat.columbia.edu/~gelman/research/published/nuts.pdf)
 (NUTS) is an extension of HMC that eliminates the need to specify the
 trajectory length but requires user to specify stepsize. With dual
-averaging algorithm NUTS can run without any hand-tuning, and samples
+averaging algorithm NUTS can run without any hand-tuning at all, and samples
 generated are at-least as good as finely hand-tuned HMC.
 
-NUTS, remove the need of parameter number of steps by considering a metric
+NUTS, removes the need of parameter number of steps by considering a metric
 to evaluate whether we have ran Leapfrog algorithm for long enough, that
 is when running the simulation for more steps would no longer increase
 the distance between the proposal value of $$x$$ and initial value of
@@ -393,8 +397,8 @@ and backward in fictitious time, first running forwards or backwards
 4 steps etc. This doubling process builds a balanced binary tree whose
 leaf nodes correspond to position-momentum states. The doubling process is
 halted when the subtrajectory from the leftmost to the rightmost nodes of
- any balanced subtree of the overall binary tree starts to double back on
-itself (i.e., the  fictional particle starts to make a "U-Turn").  At
+any balanced subtree of the overall binary tree starts to double back on
+itself (i.e., the  fictional particle starts to make a "U-Turn"). At
 this point NUTS stops the simulation and samples from among the set of
 points computed during  the  simulation, taking are to preserve detailed
 balance.
@@ -416,15 +420,18 @@ model = JointGaussianDistribution(['x', 'y', 'z'], mean, covariance)
 sampler = NUTS(model=model, grad_log_pdf=GradLogPDFGaussian)
 samples = sampler.sample(initial_pos=np.array([1, 1, 1]), num_samples=1000, stepsize=0.4)
 # Plotting trace of samples
-plt.plot(samples)
+labels = plt.plot(samples)
 plt.legend(labels, model.variables)
+plt.title("Trace plot of NUTS samples")
 plt.show()
 
 # Creating a sampling instance of NUTSda
 sampler_da = NUTSda(model=model, grad_log_pdf=GradLogPDFGaussian)
 samples = sampler_da.sample(initial_pos=np.array([0, 1, 0]), num_adapt=1000, num_samples=1000)
+# Plotting trace pf samples
 labels = plt.plot(samples)
 plt.legend(labels, model.variables)
+plt.title("Trace plot of NUTSda samples")
 plt.show()
 ~~~
 
@@ -432,10 +439,11 @@ The samples returned by all four algorithms are of two types which is
 dependent upon installation available. If working
 environment has a installation of `pandas`, then it will return a 
 `pandas.DataFrame` object otherwise it will return a `numpy.recarry` 
-object. As for now pgmpy has pandas as a strict dependency but in near
-so samples returned would always be a DataFrame object.
+object. As for now pgmpy has pandas as a strict dependency
+so samples returned would always be a DataFrame object but in near future
+we will not have pandas as a strict dependency.
 
-All these four algorithms have a another method to get samples
+Apart from `sample` method all the four implementation have a another method
 named `generate_sample` method, whose each iteration yields a sample
 which is a simple `numpy.array` object. This method is useful
 if one wants to work on a single sample at a time.
@@ -445,19 +453,27 @@ of `sample` method.
 ~~~ python
 # Using the above sampling instance of NUTSda
 gen_samples = sampler_da.generate_sample(initial_pos=np.array([0, 1, 0]),
-                                         num_adapt=1000, num_samples=1000)
+                                         num_adapt=10, num_samples=10)
 samples = np.array([sample for sample in gen_samples])
-labels = plt.plot(samples)
-plt.legend(labels, model.variables)
-plt.show()
+print(samples)
 ~~~
 
 pgmpy also provides base class structures so that user defined methods
 can be plugged-in. Lets look at some example on how we can do that.
-The distribution we are going to sample from is 
+In this example the distribution we are going to sample from is 
 [Logistic distribution](https://en.wikipedia.org/wiki/Logistic_distribution)
+The probability density of logistic distribution is given by:
 
-Here is python code
+$$ P(x; \mu, s) = \frac{e^{-\frac{x- \mu}{s}}}{s(1 + e^{-\frac{x - \mu}{s}})^2} $$
+
+Thus the log of this probability density function (potential energy function) can be written as:
+
+$$ log(P(x; \mu, s)) = -\frac{x - \mu}{s} - log(s) - 2 log(1 + e^{-\frac{x - \mu}{s}}) $$
+
+And the gradient of potential energy :
+
+$$ \frac{\partial log(P(x; \mu, s))}{\partial x} = - \frac{1}{s} + \frac{2e^{-\frac{x - \mu}{s}}}{s(1 + e^{-\frac{x - \mu}{s}})}$$
+
 
 ~~~ python
 import numpy as np
@@ -481,6 +497,7 @@ def grad_log_logistic(x):
 # Creating a logistic model
 logistic_model = ContinuousFactor(['x'], logistic_pdf)
 
+# Creating a class using base class for gradient log and log probability density function
 class GradLogLogistic(BaseGradLogPDF):
 
     def __init__(self, variable_assignments, model):
@@ -491,6 +508,7 @@ class GradLogLogistic(BaseGradLogPDF):
         return (grad_log_logistic(self.variable_assignments),
                 log_logistic(self.variable_assignments))
 
+# Generating samples using NUTS
 sampler = NUTSda(model=logistic_model, grad_log_pdf=GradLogLogistic)
 samples = sampler.sample(initial_pos=np.array([0.0]), num_adapt=10000,
                          num_samples=10000)
